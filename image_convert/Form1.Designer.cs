@@ -54,18 +54,18 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(118, 278);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(175, 12);
+            this.label1.Size = new System.Drawing.Size(179, 12);
             this.label1.TabIndex = 3;
-            this.label1.Text = "webp, avif파일을 드래그하세요";
+            this.label1.Text = "Drag webp/avif image file here";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(437, 195);
+            this.label2.Location = new System.Drawing.Point(401, 181);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(117, 12);
+            this.label2.Size = new System.Drawing.Size(180, 12);
             this.label2.TabIndex = 5;
-            this.label2.Text = "삭제할파일을 드래그";
+            this.label2.Text = "Drag the file you want to delete";
             // 
             // pictureBox2
             // 
@@ -89,7 +89,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "이미지파일변환";
+            this.Text = "Convert Image";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
