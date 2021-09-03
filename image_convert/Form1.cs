@@ -140,10 +140,7 @@ namespace image_convert
                 myThread1.Start(image_path);
                 myThread1.Join();  //쓰레드 종료시까지 기다림
                 mimg.Dispose();
-                //Thread.Sleep(1000);
-                //Thread myThread2 = new Thread(new ParameterizedThreadStart(Thread_delete));
-                //myThread2.Start(image_path);
-                //myThread2.Join(); //쓰레드 종료시까지 기다림
+
             }
         }
 
@@ -178,12 +175,6 @@ namespace image_convert
                 String file_dir = Path.GetDirectoryName(image_path);
                 String file_name = Path.GetFileNameWithoutExtension(image_path);
 
-            //MagickImage mimg = new MagickImage(image_path);
-            //   pictureBox1.Image = mimg.ToBitmap();
-            //mimg.Format = MagickFormat.Png;
-            //mimg.Write(file_dir + @"\" + file_name + ".png");
-            //Delay(500);
-            //mimg.Dispose();
 
             mimg = new MagickImage(image_path);
             mimg.Write(file_dir + @"\" + file_name + ".png");
@@ -217,7 +208,7 @@ namespace image_convert
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                         String temp_txt = label1.Text;
-            label1.Text = "이미지 변환중";
+            label1.Text = "Converting image";
             String file_dir = Path.GetDirectoryName(files[0]);
             String file_name = Path.GetFileNameWithoutExtension(files[0]);
             String f_ext = System.IO.Path.GetExtension(files[0]).Replace(".", "").ToLower();
