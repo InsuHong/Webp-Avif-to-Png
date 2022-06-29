@@ -5,5 +5,6 @@ USE Magick.NET nuget pagakage
 
 
 Change the entire directory containing the file
-
-Problem with renaming avif file. avif files are manually deleted using the delete function on the right.
+Added function to convert subdirectories
+Added function to convert multiple files
+Added function to delete original file
