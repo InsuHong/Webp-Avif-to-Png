@@ -18,9 +18,9 @@ namespace image_convert
     public partial class Form1 : Form
     {
 
-        static System.Object lockThis = new System.Object();
+       // static System.Object lockThis = new System.Object();
         //String now_dir , image_path;
-        public static MagickImage mimg;
+        //public static MagickImage mimg;
         
         
         public Form1()
@@ -215,13 +215,13 @@ namespace image_convert
         {
 
             String image_path = e.Argument as String;
-            //Debug.WriteLine("이미지경로 : " + image_path);
-            String file_dir = Path.GetDirectoryName(image_path);
+        //Debug.WriteLine("이미지경로 : " + image_path);
+        String file_dir = Path.GetDirectoryName(image_path);
             String file_name = Path.GetFileNameWithoutExtension(image_path);
             FileInfo file = new FileInfo(image_path);
             if (file.Exists)
             {
-                mimg = new MagickImage(image_path);
+                MagickImage mimg = new MagickImage(image_path);
                 mimg.Write(file_dir + @"\" + file_name + ".png");
             }
             e.Result = image_path;
