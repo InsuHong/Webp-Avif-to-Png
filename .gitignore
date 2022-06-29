@@ -1,0 +1,8 @@
+/Setup
+/packages
+/image_convert/obj
+/image_convert/bin
+/image_convert/publish
+/image_convert/Connected Services
+/.vs
+/azure-pipelines.yml
