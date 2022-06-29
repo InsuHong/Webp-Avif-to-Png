@@ -19,14 +19,19 @@ namespace image_convert
     {
 
         static System.Object lockThis = new System.Object();
-        String now_dir;
+        //String now_dir , image_path;
         public static MagickImage mimg;
+        
+        
         public Form1()
         {
             InitializeComponent();
+
+
+
         }
 
-        public void read_dir(String dir_path)
+        public void Change_Images(String dir_path)
         {
             String FolderName = dir_path;
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(FolderName);
@@ -44,7 +49,12 @@ namespace image_convert
                         String f_ext = System.IO.Path.GetExtension(File.Name).Replace(".", "").ToLower();
                         if (f_ext == "avif" || f_ext == "webp")
                         {
-                            convert_image(f_path);
+                            BackgroundWorker Convert_Image = new BackgroundWorker();
+                            Convert_Image.DoWork += new DoWorkEventHandler(Convert_Image_DoWork);
+                            Convert_Image.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Convert_Image_RunWorkerCompleted);
+                            Convert_Image.RunWorkerAsync(f_path);
+                            //convert_image(f_path);
+                            //backgroundWorker2.RunWorkerAsync(f_path); // 백그라운드에 등록
                         }
 
                     }
@@ -61,88 +71,19 @@ namespace image_convert
                     sub_di = new System.IO.DirectoryInfo(sub_dirname);
                     if (sub_di.Exists)
                     {
-                        read_dir(sub_dirname);
+                        Change_Images(sub_dirname);
                     }
 
                 }
 
 
             }
-            else
-            {
-            }
-
-        }
-
-        public void del_all(String dir_path)
-        {
-            String FolderName = dir_path;
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(FolderName);
-
-            //파일처리
-            String f_path = "", sub_dirname;
-            if (di.Exists)
-            {
-                foreach (System.IO.FileInfo File in di.GetFiles())
-                {
-                    f_path = FolderName + "\\" + File.Name;
-                    FileInfo file = new FileInfo(f_path);
-                    if (file.Exists)
-                    {
-                        String f_ext = System.IO.Path.GetExtension(File.Name).Replace(".", "").ToLower();
-                        if (f_ext == "avif" || f_ext == "webp")
-                        {
-                            del_image(f_path);
-                        }
-                    }
-
-
-
-                }
-                //디렉토리 처리
-                di = new System.IO.DirectoryInfo(FolderName);
-                System.IO.DirectoryInfo sub_di;
-                foreach (System.IO.DirectoryInfo Dirs in di.GetDirectories())
-                {
-                    sub_dirname = FolderName + "\\" + Dirs.Name;
-                    sub_di = new System.IO.DirectoryInfo(sub_dirname);
-                    if (sub_di.Exists)
-                    {
-                        del_all(sub_dirname);
-                    }
-
-                }
-
-
-            }
-            else
-            {
-            }
-
-
-
-
-
-
+ 
         }
 
 
 
 
-        static void convert_image(String image_path)
-        {
-
-
-            String f_ext = System.IO.Path.GetExtension(image_path).Replace(".", "").ToLower();
-            if (f_ext == "avif" || f_ext == "webp")
-            {
-                Thread myThread1 = new Thread(new ParameterizedThreadStart(Thread_convert));
-                myThread1.Start(image_path);
-                myThread1.Join();  //쓰레드 종료시까지 기다림
-                mimg.Dispose();
-
-            }
-        }
 
         static void del_image(String image_path)
         {
@@ -169,27 +110,10 @@ namespace image_convert
 
 
 
-        static void Thread_convert(object i_path)
-        {
-                String image_path = Convert.ToString(i_path);
-                String file_dir = Path.GetDirectoryName(image_path);
-                String file_name = Path.GetFileNameWithoutExtension(image_path);
-
-
-            mimg = new MagickImage(image_path);
-            mimg.Write(file_dir + @"\" + file_name + ".png");
-            
-
-
-        }
-
-
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
             pictureBox1.AllowDrop = true;
-            pictureBox2.AllowDrop = true;
         }
 
 
@@ -207,49 +131,112 @@ namespace image_convert
         private void pictureBox1_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                        String temp_txt = label1.Text;
             label1.Text = "Converting image";
-            String file_dir = Path.GetDirectoryName(files[0]);
-            String file_name = Path.GetFileNameWithoutExtension(files[0]);
-            String f_ext = System.IO.Path.GetExtension(files[0]).Replace(".", "").ToLower();
+
+
+            foreach (String obj in files)
+            {
+                FileAttributes chkAtt = File.GetAttributes(obj);
+                if ((chkAtt & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    // 디렉토리일 경우
+                    if (System.IO.Directory.Exists(obj))
+                    {
+                        BackgroundWorker Convert_Dir;
+                        Convert_Dir = new BackgroundWorker();
+                        Convert_Dir.DoWork += new DoWorkEventHandler(Convert_Dir_DoWork);
+                        Convert_Dir.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Convert_Dir_RunWorkerCompleted);
+                        Convert_Dir.RunWorkerAsync(obj);
+                    }
+                }
+                else
+                {
+                    // 파일 일 경우
+                    if (System.IO.File.Exists(obj))
+                    {
+                        String file_name = Path.GetFileNameWithoutExtension(obj);
+                        String f_ext = System.IO.Path.GetExtension(files[0]).Replace(".", "").ToLower();
+                        if (f_ext == "avif" || f_ext == "webp")
+                        {
+                            BackgroundWorker Convert_Image;
+                            Convert_Image = new BackgroundWorker();
+                            Convert_Image.DoWork += new DoWorkEventHandler(Convert_Image_DoWork);
+                            Convert_Image.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Convert_Image_RunWorkerCompleted);
+                            Convert_Image.RunWorkerAsync(obj);
+                        }
+                    }
+                }
+
+
+
+                
+            }
+
+            /*
             if (f_ext == "avif" || f_ext == "webp")
             {
-                MagickImage mimg = new MagickImage(files[0]);
-                pictureBox1.Image = mimg.ToBitmap();
-                mimg.Dispose();
-            }
+                backgroundWorker1.RunWorkerAsync(now_dir);
+//                Thread myThread1 = new Thread(new ParameterizedThreadStart(Thread_Change));
+//                myThread1.Start(now_dir);
+//                myThread1.Join();  //쓰레드 종료시까지 기다림
 
-            read_dir(file_dir);
-            now_dir = file_dir;
-            label1.Text = temp_txt;
+            }
+            */
 
-        }
-        private void pictureBox2_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                e.Effect = DragDropEffects.All;
-            }
-            else
-            {
-                e.Effect = DragDropEffects.None;
-            }
+
         }
 
 
 
-        private void pictureBox2_DragDrop(object sender, DragEventArgs e)
+        private void Convert_Dir_DoWork(object sender, DoWorkEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            String file_dir = Path.GetDirectoryName(files[0]);
-            del_all(file_dir);
+            String now_dir = e.Argument as String;
+            if (System.IO.Directory.Exists(now_dir))
+            {
+                Change_Images(now_dir);
+            }
+            e.Result = now_dir;
+        }
 
+        private void Convert_Dir_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             
+            String now_dir = e.Result.ToString();
+            if (System.IO.Directory.Exists(now_dir))
+            {
+              //  Del_Old_Images(now_dir);
+            }
+            label1.Text = "Converting complete";
         }
 
 
 
+        private void Convert_Image_DoWork(object sender, DoWorkEventArgs e)
+        {
 
+            String image_path = e.Argument as String;
+            //Debug.WriteLine("이미지경로 : " + image_path);
+            String file_dir = Path.GetDirectoryName(image_path);
+            String file_name = Path.GetFileNameWithoutExtension(image_path);
+            FileInfo file = new FileInfo(image_path);
+            if (file.Exists)
+            {
+                mimg = new MagickImage(image_path);
+                mimg.Write(file_dir + @"\" + file_name + ".png");
+            }
+            e.Result = image_path;
+
+        }
+
+        private void Convert_Image_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            String image_path = e.Result.ToString();
+            FileInfo file = new FileInfo(image_path);
+            if (file.Exists)
+            {
+                del_image(image_path);
+            }
+        }
 
 
         //이미지 파일 메모리에 적재(사용중인 파일 문제 해결)
