@@ -234,7 +234,11 @@ namespace image_convert
             FileInfo file = new FileInfo(image_path);
             if (file.Exists)
             {
-                del_image(image_path);
+                if(checkBox1.Checked == true)
+                {
+                    del_image(image_path);
+                }
+                
             }
         }
 
