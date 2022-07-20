@@ -221,8 +221,19 @@ namespace image_convert
             FileInfo file = new FileInfo(image_path);
             if (file.Exists)
             {
-                MagickImage mimg = new MagickImage(image_path);
-                mimg.Write(file_dir + @"\" + file_name + ".png");
+
+                
+                MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
+                if(animatedWebP.Count > 1)
+                {
+                    animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
+                }
+                else
+                {
+                    MagickImage mimg = new MagickImage(image_path);
+                    mimg.Write(file_dir + @"\" + file_name + ".png");
+                }
+                
             }
             e.Result = image_path;
 
