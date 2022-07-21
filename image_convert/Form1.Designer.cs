@@ -32,6 +32,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label_result = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,11 +69,22 @@
             this.checkBox1.Text = "Delete original file";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // label_result
+            // 
+            this.label_result.Location = new System.Drawing.Point(17, 146);
+            this.label_result.Name = "label_result";
+            this.label_result.Size = new System.Drawing.Size(534, 29);
+            this.label_result.TabIndex = 6;
+            this.label_result.Text = ".";
+            this.label_result.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_result.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(587, 316);
+            this.Controls.Add(this.label_result);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
@@ -90,6 +102,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label_result;
     }
 }
 

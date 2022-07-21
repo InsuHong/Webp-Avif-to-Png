@@ -213,43 +213,55 @@ namespace image_convert
 
         private void Convert_Image_DoWork(object sender, DoWorkEventArgs e)
         {
-
-            String image_path = e.Argument as String;
-        //Debug.WriteLine("이미지경로 : " + image_path);
-        String file_dir = Path.GetDirectoryName(image_path);
-            String file_name = Path.GetFileNameWithoutExtension(image_path);
-            FileInfo file = new FileInfo(image_path);
-            if (file.Exists)
+            try
             {
+                String image_path = e.Argument as String;
+                //Debug.WriteLine("이미지경로 : " + image_path);
+                String file_dir = Path.GetDirectoryName(image_path);
+                String file_name = Path.GetFileNameWithoutExtension(image_path);
+                FileInfo file = new FileInfo(image_path);
+                if (file.Exists)
+                {
 
-                
-                MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
-                if(animatedWebP.Count > 1)
-                {
-                    animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
+
+                    MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
+                    if (animatedWebP.Count > 1)
+                    {
+                        animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
+                    }
+                    else
+                    {
+                        MagickImage mimg = new MagickImage(image_path);
+                        mimg.Write(file_dir + @"\" + file_name + ".png");
+                    }
+
                 }
-                else
-                {
-                    MagickImage mimg = new MagickImage(image_path);
-                    mimg.Write(file_dir + @"\" + file_name + ".png");
-                }
-                
+                e.Result = image_path;
             }
-            e.Result = image_path;
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error : Convert_Image_DoWork");
+            }
         }
 
         private void Convert_Image_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            String image_path = e.Result.ToString();
-            FileInfo file = new FileInfo(image_path);
-            if (file.Exists)
+            try
             {
-                if(checkBox1.Checked == true)
+                String image_path = e.Result.ToString();
+                FileInfo file = new FileInfo(image_path);
+                if (file.Exists)
                 {
-                    del_image(image_path);
+                    if (checkBox1.Checked == true)
+                    {
+                        del_image(image_path);
+                    }
+
                 }
-                
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Error : Convert_Image_RunWorkerCompleted");
             }
         }
 
@@ -292,6 +304,7 @@ namespace image_convert
             }
             return DateTime.Now;
         }
+
 
 
 
