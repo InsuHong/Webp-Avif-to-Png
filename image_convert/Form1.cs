@@ -53,6 +53,7 @@ namespace image_convert
                             Convert_Image.DoWork += new DoWorkEventHandler(Convert_Image_DoWork);
                             Convert_Image.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Convert_Image_RunWorkerCompleted);
                             Convert_Image.RunWorkerAsync(f_path);
+                            Delay(1000);  //다음이미지까지 대기
                             //convert_image(f_path);
                             //backgroundWorker2.RunWorkerAsync(f_path); // 백그라운드에 등록
                         }
