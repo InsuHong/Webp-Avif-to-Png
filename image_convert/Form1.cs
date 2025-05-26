@@ -228,7 +228,8 @@ namespace image_convert
                     MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
                     if (animatedWebP.Count > 1)
                     {
-                        animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
+                       //변환 체크된것만 
+                       if(checkBox2.Checked == true) animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
                     }
                     else
                     {
