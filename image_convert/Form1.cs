@@ -140,9 +140,13 @@ namespace image_convert
                 FileAttributes chkAtt = File.GetAttributes(obj);
                 if ((chkAtt & FileAttributes.Directory) == FileAttributes.Directory)
                 {
+                    
                     // 디렉토리일 경우
                     if (System.IO.Directory.Exists(obj))
                     {
+
+
+
                         BackgroundWorker Convert_Dir;
                         Convert_Dir = new BackgroundWorker();
                         Convert_Dir.DoWork += new DoWorkEventHandler(Convert_Dir_DoWork);
@@ -192,6 +196,7 @@ namespace image_convert
         private void Convert_Dir_DoWork(object sender, DoWorkEventArgs e)
         {
             String now_dir = e.Argument as String;
+
             if (System.IO.Directory.Exists(now_dir))
             {
                 Change_Images(now_dir);
@@ -201,7 +206,6 @@ namespace image_convert
 
         private void Convert_Dir_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
             String now_dir = e.Result.ToString();
             if (System.IO.Directory.Exists(now_dir))
             {
@@ -217,6 +221,11 @@ namespace image_convert
             try
             {
                 String image_path = e.Argument as String;
+                Image_Item item = new Image_Item();
+                item.src = image_path;
+                item.cnt = 0;
+                item.type = Image_Item.image_type.single;
+                
                 //Debug.WriteLine("이미지경로 : " + image_path);
                 String file_dir = Path.GetDirectoryName(image_path);
                 String file_name = Path.GetFileNameWithoutExtension(image_path);
@@ -226,10 +235,12 @@ namespace image_convert
 
 
                     MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
+                    item.cnt = animatedWebP.Count;
                     if (animatedWebP.Count > 1)
                     {
-                       //변환 체크된것만 
-                       if(checkBox2.Checked == true) animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
+                        //변환 체크된것만 
+                        item.type = Image_Item.image_type.animation;
+                        if (checkBox2.Checked == true) animatedWebP.Write(file_dir + @"\" + file_name + ".gif");
                     }
                     else
                     {
@@ -238,7 +249,8 @@ namespace image_convert
                     }
 
                 }
-                e.Result = image_path;
+                e.Result = item;
+                
             }
             catch (Exception ex)
             {
@@ -250,11 +262,12 @@ namespace image_convert
         {
             try
             {
-                String image_path = e.Result.ToString();
+                //String image_path = e.Result.ToString();
+                Image_Item item = e.Result as Image_Item;
+                String image_path = item.src;
                 FileInfo file = new FileInfo(image_path);
                 if (file.Exists)
                 {
-                    MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
                     if (checkBox2.Checked == true)
                     {
                         if (checkBox1.Checked == true)
@@ -262,8 +275,9 @@ namespace image_convert
                             del_image(image_path);
                         }
                     }
-                    else if (animatedWebP.Count <= 1 && checkBox1.Checked == true  )
+                    else if (item.type == Image_Item.image_type.single && checkBox1.Checked == true  )
                     {
+                        //단일이미지에서 이미지 삭제 체크된것만  
                         del_image(image_path);
                     }
 
@@ -318,7 +332,18 @@ namespace image_convert
 
 
 
+        public class Image_Item
+        {
+            public Image_Item()
+            {
 
+            }
+            public string src { get; set; }
+            public int cnt { get; set; }
+
+            public enum image_type { single, animation }
+            public image_type type { get; set; }
+        }
 
 
         //EOF
