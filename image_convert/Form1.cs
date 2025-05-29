@@ -254,7 +254,15 @@ namespace image_convert
                 FileInfo file = new FileInfo(image_path);
                 if (file.Exists)
                 {
-                    if (checkBox1.Checked == true)
+                    MagickImageCollection animatedWebP = new MagickImageCollection(image_path);
+                    if (checkBox2.Checked == true)
+                    {
+                        if (checkBox1.Checked == true)
+                        {
+                            del_image(image_path);
+                        }
+                    }
+                    else if (animatedWebP.Count <= 1 && checkBox1.Checked == true  )
                     {
                         del_image(image_path);
                     }
@@ -306,6 +314,9 @@ namespace image_convert
             }
             return DateTime.Now;
         }
+
+
+
 
 
 
